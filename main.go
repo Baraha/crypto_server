@@ -5,14 +5,23 @@ import (
 	"log"
 
 	"github.com/fasthttp/router"
+	"github.com/valyala/fasthttp"
+)
+
+const (
+	hosts      = "ds026491.mongolab.com:26491"
+	database   = "messagingdb"
+	username   = "admin"
+	password   = "youPassword"
+	collection = "messages"
 )
 
 func Index(ctx *fasthttp.RequestCtx) {
-	fmt.Fprint(w, "Welcome!\n")
+	ctx.WriteString("Welcome!")
 }
 
 func Hello(ctx *fasthttp.RequestCtx) {
-	fmt.Fprintf(w, "hello, %s!\n", ctx.UserValue("name"))
+	fmt.Fprintf(ctx, "Hello, %s!\n", ctx.UserValue("name"))
 }
 
 func main() {
@@ -21,4 +30,5 @@ func main() {
 	r.GET("/hello/{name}", Hello)
 
 	log.Fatal(fasthttp.ListenAndServe(":8080", r.Handler))
+
 }
