@@ -11,6 +11,11 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+type StatCoin struct {
+	Name  string
+	value int
+}
+
 func Index(ctx *fasthttp.RequestCtx) {
 	ctx.WriteString("Welcome!")
 }
@@ -33,6 +38,16 @@ func main() {
 	}
 
 	fmt.Println("Connected to MongoDB!")
+
+	// add object in data
+	collection := Client.Database("test").Collection("cryptocurrency")
+
+	bitcoint := StatCoin{"bitcoin", 1212121}
+	insertResult, err := collection.InsertOne(context.TODO(), bitcoint)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Inserted a single document: ", insertResult.InsertedID)
 
 	r := router.New()
 	r.GET("/", Index)
