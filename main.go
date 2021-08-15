@@ -53,7 +53,7 @@ func getMongoDbCollection(DbName string, CollectionName string) (*mongo.Collecti
 
 func CoinView(ctx *fasthttp.RequestCtx) {
 	options := options.Find()
-	options.SetLimit(2)
+	//options.SetLimit(5)
 	filter := bson.M{}
 	collection, err := getMongoDbCollection(dbName, "cryptocurrency")
 	if err != nil {
