@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/Baraha/crypto_server.git/models"
 	"github.com/Baraha/crypto_server.git/utils"
@@ -135,7 +136,7 @@ func CreateCoinView(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	var currency models.StatCoin
+	var currency models.Data
 	json.Unmarshal([]byte(ctx.Request.Body()), &currency)
 
 	res, err := collection.InsertOne(context.Background(), currency)
@@ -182,20 +183,13 @@ func CoinItemView(ctx *fasthttp.RequestCtx) {
 	}
 
 	options := options.Find()
-	//options.SetLimit(2)
 	filter := bson.M{}
-
-	// Here's an array in which you can store the decoded documents
-
-	// Passing nil as the filter matches all documents in the collection
 	cur, err := collection.Find(context.TODO(), filter, options)
 	fmt.Println("cur: ", cur)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Finding multiple documents returns a cursor
-	// Iterating through the cursor allows us to decode documents one at a time
 	cnt := 0
 	var results map[string]models.Data
 	results = make(map[string]models.Data)
@@ -204,8 +198,7 @@ func CoinItemView(ctx *fasthttp.RequestCtx) {
 		item := "item" + fmt.Sprint(cnt)
 		fmt.Println("item: ", item)
 		cnt++
-		// create a value into which the single document can be decoded
-		var elem models.StatCoin
+		var elem models.Data
 		err := cur.Decode(&elem)
 		if err != nil {
 			log.Fatal(err)
@@ -215,16 +208,14 @@ func CoinItemView(ctx *fasthttp.RequestCtx) {
 		fmt.Println("data append", data)
 		results[item] = data
 		fmt.Println("results update ", data)
-
 	}
-
 	if err := cur.Err(); err != nil {
 		log.Fatal(err)
-
 	}
-
 	// Close the cursor once finished
 	cur.Close(context.TODO())
 	json, _ := json.Marshal(results)
 	ctx.Response.AppendBody(json)
+	time.Sleep(2 * time.Millisecond)
+
 }

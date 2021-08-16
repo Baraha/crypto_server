@@ -7,6 +7,7 @@ import (
 
 	"github.com/Baraha/crypto_server.git/api"
 	"github.com/Baraha/crypto_server.git/models"
+	"github.com/Baraha/crypto_server.git/services"
 	"github.com/fasthttp/router"
 	"github.com/valyala/fasthttp"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -18,6 +19,7 @@ var dbName = "test"
 var coincapUrl = "https://api.coincap.io/v2/assets/"
 
 func main() {
+	go services.Control()
 	// Set client options
 	clientOptions := options.Client().ApplyURI(mongo_url)
 
@@ -35,7 +37,7 @@ func main() {
 	// add object in data
 	collection := Client.Database("test").Collection("cryptocurrency")
 
-	bitcoin := models.StatCoin{Coin_id: "bitcoin", Interval: 2}
+	bitcoin := models.Data{Coin_id: "bitcoin", Interval: 30}
 	insertResult, err := collection.InsertOne(context.TODO(), bitcoin)
 	if err != nil {
 		log.Fatal(err)

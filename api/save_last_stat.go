@@ -18,7 +18,7 @@ func SaveLastStat(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	var last_stat models.StatCoin
+	var last_stat models.Data
 	json.Unmarshal([]byte(ctx.Request.Body()), &last_stat)
 
 	res, err := collection.InsertOne(context.Background(), last_stat)
