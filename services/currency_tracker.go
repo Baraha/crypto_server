@@ -67,7 +67,7 @@ func Control() {
 			}
 			fmt.Println("elem.Coin_id: ", elem.Coin_id)
 			if elem.Coin_id == "" {
-				log.Fatal("error id detected, id: ", elem.Coin_id)
+				fmt.Println("error id detected, id: ", elem.Coin_id)
 				continue
 			}
 			data := api.GetServerInfo(elem.Coin_id)
