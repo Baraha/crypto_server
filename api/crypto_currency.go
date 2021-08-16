@@ -171,6 +171,7 @@ func CoinView(ctx *fasthttp.RequestCtx) {
 	}
 
 	json, _ := json.Marshal(results)
+	ctx.Response.Header.SetContentType("application/json")
 	ctx.Response.AppendBody(json)
 }
 
@@ -229,7 +230,7 @@ func CreateCoinView(ctx *fasthttp.RequestCtx) {
 	}
 
 	response, _ := json.Marshal(res)
-	ctx.Response.Header.Add("content-type", "application/json")
+	ctx.Response.Header.SetContentType("application/json")
 	ctx.Response.AppendBody(response)
 
 }
