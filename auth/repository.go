@@ -3,7 +3,7 @@ package auth
 import (
 	"context"
 
-	"./models"
+	"github.com/Baraha/crypto_server.git/models"
 )
 
 type Repository interface {

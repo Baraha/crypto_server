@@ -3,7 +3,7 @@ package auth
 import (
 	"context"
 
-	"github.com/Baraha/crypto_server/models"
+	"github.com/Baraha/crypto_server.git/models"
 )
 
 type UseCase interface {
