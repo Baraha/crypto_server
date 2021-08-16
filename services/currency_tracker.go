@@ -18,7 +18,7 @@ var dbName = "test"
 func save_detect(data models.Data, id string, interval int) {
 
 	if id == "" {
-		fmt.Println("error id detected, id: ", id)
+		log.Fatal("error id detected, id: ", id)
 		return
 	}
 	fmt.Println("data.Interval: ", interval)
@@ -66,6 +66,10 @@ func Control() {
 				log.Fatal(err)
 			}
 			fmt.Println("elem.Coin_id: ", elem.Coin_id)
+			if elem.Coin_id == "" {
+				log.Fatal("error id detected, id: ", elem.Coin_id)
+				continue
+			}
 			data := api.GetServerInfo(elem.Coin_id)
 			go save_detect(data, elem.Coin_id, elem.Interval)
 
