@@ -17,7 +17,7 @@ var dbName = "test"
 var THROTTLE = 0
 
 const (
-	EXEC_THROTTLE = 20
+	EXEC_THROTTLE = 10
 )
 
 func save_detect(data models.Data, id string, interval int) {
