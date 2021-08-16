@@ -49,6 +49,7 @@ func save_detect(data models.Data, id string, interval int) {
 }
 
 func Control() {
+
 	fmt.Println("Start working control service")
 	collection_currency, err := utils.GetMongoDbCollection(dbName, "cryptocurrency")
 	if err != nil {
@@ -57,11 +58,14 @@ func Control() {
 	options := options.Find()
 	filter := bson.M{}
 	for THROTTLE < EXEC_THROTTLE+1 {
-		if THROTTLE < EXEC_THROTTLE-1 {
-			THROTTLE++
-		}
+		time.Sleep(1 * time.Second)
 		if THROTTLE < 0 {
 			THROTTLE = 0
+		}
+		if THROTTLE >= EXEC_THROTTLE-1 {
+			time.Sleep(4 * time.Second)
+			fmt.Println("wait THROTTLE ", THROTTLE)
+			continue
 		}
 
 		cur, err := collection_currency.Find(context.TODO(), filter, options)
@@ -72,6 +76,9 @@ func Control() {
 
 		cnt := 0
 		for cur.Next(context.TODO()) {
+			if THROTTLE < EXEC_THROTTLE-1 {
+				THROTTLE++
+			}
 			cnt++
 			var elem models.Data
 			err := cur.Decode(&elem)
@@ -84,9 +91,9 @@ func Control() {
 				continue
 			}
 			data := api.GetServerInfo(elem.Coin_id)
-			if THROTTLE < EXEC_THROTTLE-1 {
-				go save_detect(data, elem.Coin_id, elem.Interval)
-			}
+
+			go save_detect(data, elem.Coin_id, elem.Interval)
+
 			fmt.Println("THROTTLE ", THROTTLE)
 			fmt.Println("data append", data)
 
