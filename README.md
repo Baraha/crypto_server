@@ -10,7 +10,7 @@ git clone https://github.com/Baraha/crypto_server.git
 #### Сборка Production с помощью docker-compose
 1. [Установите docker-compose](https://docs.docker.com/compose/install/)
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-2. Запустите сборку контейнеров (здесь их 4):
+2. Запустите сборку контейнеров (здесь их 2):
 ```bash
 docker-compose up -d --build api db
 ```
