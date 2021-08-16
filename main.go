@@ -15,8 +15,6 @@ import (
 )
 
 var mongo_url = "mongodb://mongo:27017/"
-var dbName = "test"
-var coincapUrl = "https://api.coincap.io/v2/assets/"
 
 func main() {
 	go services.Control()

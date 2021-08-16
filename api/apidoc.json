@@ -1,0 +1,8 @@
+{
+    "name": "TestApp",
+    "version": "0.1.0",
+    "title": "CryptoServer",
+    "template": {
+      "forceLanguage": "ru"
+    }
+  }

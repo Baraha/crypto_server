@@ -91,7 +91,53 @@ func GetServerInfo(coin_id string) (response models.Data) {
 }
 
 func CoinView(ctx *fasthttp.RequestCtx) {
-
+	/**
+		*This is a comment.
+		*@api {get} http://localhost:8080/cryptocurrency/
+		*@apiName Просмотр валюты
+		*@apiGroup Криптовалюта
+		*@apiDescription Просмотр Криптовалюты, обноваляется в базе каждый цикл интервала
+		*@apiParam {string} coin_id Вид просматриваемой валюты
+		*@apiParam {string} rank Позиция валюты на мировой криптобирже
+		*@apiParam {string} symbol символическое обожначение
+		*@apiParam {int} interval Интервалы между обновлением валюты в секундах
+		*@apiParam {string} priceUsd цена валюты в переводе в USD
+		*@apiSuccessExample {json} Success-Response:
+	        [
+				{
+					"_id": "611a7074e1d840f625b58c92",
+					"coin_id": "bitcoin",
+					"interval": 30,
+					"priceusd": "46439.5197486433777590",
+					"rank": "1",
+					"symbol": "BTC"
+				},
+				{
+					"_id": "611a70e5e1d840f625b58f1e",
+					"coin_id": "ethereum",
+					"interval": 1,
+					"priceusd": "3228.3628716937351608",
+					"rank": "2",
+					"symbol": "ETH"
+				},
+				{
+					"_id": "611a71cad88a76ef6f00de5f",
+					"coin_id": "bitcoin",
+					"interval": 30,
+					"priceusd": "46439.5197486433777590",
+					"rank": "1",
+					"symbol": "BTC"
+				},
+				{
+					"_id": "611a71d2c9a9566d5c98fb02",
+					"coin_id": "bitcoin",
+					"interval": 30,
+					"priceusd": "46439.5197486433777590",
+					"rank": "1",
+					"symbol": "BTC"
+				}
+			]
+	*/
 	options := options.Find()
 	//options.SetLimit(5)
 	filter := bson.M{}
@@ -129,6 +175,42 @@ func CoinView(ctx *fasthttp.RequestCtx) {
 }
 
 func CreateCoinView(ctx *fasthttp.RequestCtx) {
+	/**
+
+	Создание партии
+	@api {POST} api/batches/ Создание партии
+	@apiName Создания статистики по криптовалюте
+	@apiGroup Криптовалюта
+	@apiDescription Создания статистики по криптовалюте
+
+	@apiParam {string} coin_id Вид просматриваемой валюты
+	@apiParam {int} interval Интервалы между обновлением валюты в секундах
+
+	@apiParamExample {json} Request-Example:
+	{
+
+		"coin_id": "bitcoin",
+		"interval": 30
+	}
+
+	@apiSuccessExample {json} Success-Response:
+	HTTP/1.1 200 OK
+	{
+		"InsertedID": "611a8824e450d2183ab5f9a2"
+	}
+
+	@apiError (500 BAD REQUEST) {Object} errors List of errors
+
+	@apiErrorExample ValidationErrors:
+	{
+		{
+			"message": "Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)"
+		}
+	}
+
+
+
+	*/
 	collection, err := utils.GetMongoDbCollection(dbName, "cryptocurrency")
 	if err != nil {
 		log.Fatal(err)
@@ -149,11 +231,26 @@ func CreateCoinView(ctx *fasthttp.RequestCtx) {
 	response, _ := json.Marshal(res)
 	ctx.Response.Header.Add("content-type", "application/json")
 	ctx.Response.AppendBody(response)
-	return
 
 }
 
 func DeleteCoinView(ctx *fasthttp.RequestCtx) {
+	/*
+		Удаление мониторинга за криптовалютой по ID
+
+		@api {delete} /api/batches/<batch_id>/ Удаление мониторинга за криптовалютой
+		@apiName Удаление мониторинга за криптовалютой
+		@apiGroup Криптовалюта
+		@apiDescription Удаление мониторинга за криптовалютой по ID
+		@apiError (404 NOT FOUND) ID обьекта некорректен
+		@apiError (404 NOT FOUND) {string} errors.common Common message
+		@apiSuccessExample {json} Success-Response:
+		{
+			objID: ObjectID("611a8824e450d2183ab5f9a2")
+			UserValue: 611a8824e450d2183ab5f9a2
+			{"DeletedCount":0}
+		}
+	*/
 	collection, err := utils.GetMongoDbCollection(dbName, "cryptocurrency")
 
 	if err != nil {

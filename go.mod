@@ -10,6 +10,7 @@ require (
 	github.com/gin-gonic/gin v1.7.4 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/klauspost/compress v1.13.4 // indirect
+	github.com/swaggo/http-swagger v1.1.1 // indirect
 	github.com/valyala/fasthttp v1.28.0
 	github.com/youmark/pkcs8 v0.0.0-20201027041543-1326539a0a0a // indirect
 	go.mongodb.org/mongo-driver v1.7.1
