@@ -14,6 +14,11 @@ import (
 )
 
 var dbName = "test"
+var THROTTLE = 0
+
+const (
+	EXEC_THROTTLE = 20
+)
 
 func save_detect(data models.Data, id string, interval int) {
 
@@ -40,6 +45,7 @@ func save_detect(data models.Data, id string, interval int) {
 		return
 	}
 	fmt.Printf("Matched %v documents and updated %v documents.\n", res.MatchedCount, res.ModifiedCount)
+	THROTTLE--
 }
 
 func Control() {
@@ -50,7 +56,14 @@ func Control() {
 	}
 	options := options.Find()
 	filter := bson.M{}
-	for {
+	for THROTTLE < EXEC_THROTTLE+1 {
+		if THROTTLE < EXEC_THROTTLE-1 {
+			THROTTLE++
+		}
+		if THROTTLE < 0 {
+			THROTTLE = 0
+		}
+
 		cur, err := collection_currency.Find(context.TODO(), filter, options)
 		fmt.Println("cur: ", cur)
 		if err != nil {
@@ -71,8 +84,10 @@ func Control() {
 				continue
 			}
 			data := api.GetServerInfo(elem.Coin_id)
-			go save_detect(data, elem.Coin_id, elem.Interval)
-
+			if THROTTLE < EXEC_THROTTLE-1 {
+				go save_detect(data, elem.Coin_id, elem.Interval)
+			}
+			fmt.Println("THROTTLE ", THROTTLE)
 			fmt.Println("data append", data)
 
 			fmt.Println("results update ", data)
