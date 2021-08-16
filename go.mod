@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/andybalholm/brotli v1.0.3 // indirect
+	github.com/antonholmquist/jason v1.0.0
 	github.com/fasthttp/router v1.4.1
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/klauspost/compress v1.13.4 // indirect
