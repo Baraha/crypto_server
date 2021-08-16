@@ -216,7 +216,7 @@ func CoinItemView(ctx *fasthttp.RequestCtx) {
 	}
 
 	options := options.Find()
-	options.SetLimit(2)
+	//options.SetLimit(2)
 	filter := bson.M{}
 
 	// Here's an array in which you can store the decoded documents
