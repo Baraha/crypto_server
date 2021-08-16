@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/Baraha/crypto_server.git/models"
 	"github.com/Baraha/crypto_server.git/utils"
@@ -29,17 +28,21 @@ func GetServerInfo(coin_id string) (response models.Data) {
 	defer fasthttp.ReleaseResponse(resp)
 
 	// Perform the request
-	err := fasthttp.Do(req, resp)
-	if err != nil {
-		fmt.Printf("Client get failed: %s\n", err)
-		return
-	}
+	for {
+		err := fasthttp.Do(req, resp)
+		if err != nil {
+			fmt.Printf("Client get failed: %s\n", err)
+			return
+		}
 
-	if resp.StatusCode() != fasthttp.StatusOK {
-		fmt.Printf("Expected status code %d but got %d\n", fasthttp.StatusOK, resp.StatusCode())
-		return
+		if resp.StatusCode() != fasthttp.StatusOK {
+			fmt.Printf("Expected status code %d but got %d\n", fasthttp.StatusOK, resp.StatusCode())
+		}
+		if resp.StatusCode() == fasthttp.StatusOK {
+			fmt.Printf("Get data:  status code %d\n", resp.StatusCode())
+			break
+		}
 	}
-
 	contentType := resp.Header.Peek("Content-Type")
 	if bytes.Index(contentType, []byte("application/json")) != 0 {
 		fmt.Printf("Expected content type application/json but got %s\n", contentType)
@@ -57,11 +60,20 @@ func GetServerInfo(coin_id string) (response models.Data) {
 	fmt.Printf("Response body is: %s", body)
 
 	object, err := jason.NewObjectFromBytes(body)
-	data_coin, err := object.GetObject("data")
-	byte_data, err3 := data_coin.Marshal()
-	if err3 != nil {
+	if err != nil {
 
-		log.Fatal(err3)
+		log.Fatal(err)
+	}
+	data_coin, err := object.GetObject("data")
+	if err != nil {
+
+		log.Fatal(err)
+	}
+	byte_data, err := data_coin.Marshal()
+
+	if err != nil {
+
+		log.Fatal(err)
 	}
 	var data models.Data
 	err2 := json.Unmarshal(byte_data, &data)
@@ -189,7 +201,6 @@ func CoinItemView(ctx *fasthttp.RequestCtx) {
 	results = make(map[string]models.Data)
 	fmt.Println("results: ", results)
 	for cur.Next(context.TODO()) {
-		time.Sleep(1 * time.Millisecond)
 		item := "item" + fmt.Sprint(cnt)
 		fmt.Println("item: ", item)
 		cnt++

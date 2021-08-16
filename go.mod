@@ -7,6 +7,7 @@ require (
 	github.com/antonholmquist/jason v1.0.0
 	github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1 // indirect
 	github.com/fasthttp/router v1.4.1
+	github.com/gin-gonic/gin v1.7.4 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/klauspost/compress v1.13.4 // indirect
 	github.com/valyala/fasthttp v1.28.0
