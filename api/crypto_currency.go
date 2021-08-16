@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/Baraha/crypto_server.git/models"
+	"github.com/Baraha/crypto_server.git/utils"
 	"github.com/antonholmquist/jason"
 	"github.com/valyala/fasthttp"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -16,7 +17,6 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-var mongo_url = "mongodb://mongo:27017/"
 var dbName = "test"
 var coincapUrl = "https://api.coincap.io/v2/assets/"
 
@@ -82,7 +82,7 @@ func CoinView(ctx *fasthttp.RequestCtx) {
 	options := options.Find()
 	//options.SetLimit(5)
 	filter := bson.M{}
-	collection, err := utils.getMongoDbCollection(dbName, "cryptocurrency")
+	collection, err := utils.GetMongoDbCollection(dbName, "cryptocurrency")
 	if err != nil {
 		log.Fatal(err)
 		ctx.Response.Header.SetStatusCode(500)
@@ -116,7 +116,7 @@ func CoinView(ctx *fasthttp.RequestCtx) {
 }
 
 func CreateCoinView(ctx *fasthttp.RequestCtx) {
-	collection, err := utils.getMongoDbCollection(dbName, "cryptocurrency")
+	collection, err := utils.GetMongoDbCollection(dbName, "cryptocurrency")
 	if err != nil {
 		log.Fatal(err)
 		ctx.Response.Header.SetStatusCode(500)
@@ -139,7 +139,7 @@ func CreateCoinView(ctx *fasthttp.RequestCtx) {
 }
 
 func DeleteCoinView(ctx *fasthttp.RequestCtx) {
-	collection, err := utils.getMongoDbCollection(dbName, "cryptocurrency")
+	collection, err := utils.GetMongoDbCollection(dbName, "cryptocurrency")
 
 	if err != nil {
 		log.Fatal(err)
@@ -162,7 +162,7 @@ func DeleteCoinView(ctx *fasthttp.RequestCtx) {
 
 func CoinItemView(ctx *fasthttp.RequestCtx) {
 
-	collection, err := utils.getMongoDbCollection(dbName, "cryptocurrency")
+	collection, err := utils.GetMongoDbCollection(dbName, "cryptocurrency")
 	if err != nil {
 		log.Fatal(err)
 		ctx.Response.Header.SetStatusCode(500)

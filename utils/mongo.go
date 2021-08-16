@@ -10,8 +10,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-func getMongoDbConnection() (*mongo.Client, error) {
-	mongo_url := "mongodb://mongo:27017/"
+var mongo_url = "mongodb://mongo:27017/"
+
+func GetMongoDbConnection() (*mongo.Client, error) {
+
 	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(mongo_url))
 
 	if err != nil {
@@ -27,8 +29,8 @@ func getMongoDbConnection() (*mongo.Client, error) {
 	return client, nil
 }
 
-func getMongoDbCollection(DbName string, CollectionName string) (*mongo.Collection, error) {
-	client, err := getMongoDbConnection()
+func GetMongoDbCollection(DbName string, CollectionName string) (*mongo.Collection, error) {
+	client, err := GetMongoDbConnection()
 
 	if err != nil {
 		return nil, err
