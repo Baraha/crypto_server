@@ -32,7 +32,7 @@ func save_detect(data models.Data, id string, interval int) {
 	filter := bson.M{"coin_id": id}
 	fmt.Println("filter: ", filter)
 
-	update := bson.M{"$set": bson.M{"rank": data.Rank, "symbol": data.Symbol}}
+	update := bson.M{"$set": bson.M{"rank": data.Rank, "symbol": data.Symbol, "priceusd": data.PriceUsd}}
 	fmt.Println("data to save ! ", data)
 	res, err := collection_statistic.UpdateMany(context.Background(), filter, update)
 	if err != nil {
@@ -58,12 +58,7 @@ func Control() {
 		}
 
 		cnt := 0
-		var results map[string]models.Data
-		results = make(map[string]models.Data)
-		fmt.Println("results: ", results)
 		for cur.Next(context.TODO()) {
-			item := "item" + fmt.Sprint(cnt)
-			fmt.Println("item: ", item)
 			cnt++
 			var elem models.Data
 			err := cur.Decode(&elem)
@@ -75,7 +70,7 @@ func Control() {
 			go save_detect(data, elem.Coin_id, elem.Interval)
 
 			fmt.Println("data append", data)
-			results[item] = data
+
 			fmt.Println("results update ", data)
 		}
 	}
