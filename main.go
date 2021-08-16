@@ -18,11 +18,6 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-type StatCoin struct {
-	Coin_id  string `json:”coin_id”`
-	Interval int    `json:”interval”`
-}
-
 type Data struct {
 	Id     string `json:”id”`
 	Rank   string `json:”rank”`
