@@ -126,5 +126,44 @@ define({ "api": [
     "version": "0.0.0",
     "filename": "api/crypto_currency.go",
     "groupTitle": "Криптовалюта"
+  },
+  {
+    "type": "delete",
+    "url": "/api/batches/<batch_id>/",
+    "title": "Удаление мониторинга за криптовалютой",
+    "name": "Удаление_мониторинга_за_криптовалютой",
+    "group": "Криптовалюта",
+    "description": "<p>Удаление мониторинга за криптовалютой по ID</p>",
+    "error": {
+      "fields": {
+        "404 NOT FOUND": [
+          {
+            "group": "404 NOT FOUND",
+            "optional": false,
+            "field": "ID",
+            "description": "<p>обьекта некорректен</p>"
+          },
+          {
+            "group": "404 NOT FOUND",
+            "type": "string",
+            "optional": false,
+            "field": "errors.common",
+            "description": "<p>Common message</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n\tobjID: ObjectID(\"611a8824e450d2183ab5f9a2\")\n\tUserValue: 611a8824e450d2183ab5f9a2\n\t{\"DeletedCount\":0}\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "api/crypto_currency.go",
+    "groupTitle": "Криптовалюта"
   }
 ] });

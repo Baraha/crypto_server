@@ -236,21 +236,21 @@ func CreateCoinView(ctx *fasthttp.RequestCtx) {
 }
 
 func DeleteCoinView(ctx *fasthttp.RequestCtx) {
-	/*
-		Удаление мониторинга за криптовалютой по ID
+	/**
+	Удаление мониторинга за криптовалютой по ID
 
-		@api {delete} /api/batches/<batch_id>/ Удаление мониторинга за криптовалютой
-		@apiName Удаление мониторинга за криптовалютой
-		@apiGroup Криптовалюта
-		@apiDescription Удаление мониторинга за криптовалютой по ID
-		@apiError (404 NOT FOUND) ID обьекта некорректен
-		@apiError (404 NOT FOUND) {string} errors.common Common message
-		@apiSuccessExample {json} Success-Response:
-		{
-			objID: ObjectID("611a8824e450d2183ab5f9a2")
-			UserValue: 611a8824e450d2183ab5f9a2
-			{"DeletedCount":0}
-		}
+	@api {delete} /api/batches/<batch_id>/ Удаление мониторинга за криптовалютой
+	@apiName Удаление мониторинга за криптовалютой
+	@apiGroup Криптовалюта
+	@apiDescription Удаление мониторинга за криптовалютой по ID
+	@apiError (404 NOT FOUND) ID обьекта некорректен
+	@apiError (404 NOT FOUND) {string} errors.common Common message
+	@apiSuccessExample {json} Success-Response:
+	{
+		objID: ObjectID("611a8824e450d2183ab5f9a2")
+		UserValue: 611a8824e450d2183ab5f9a2
+		{"DeletedCount":0}
+	}
 	*/
 	collection, err := utils.GetMongoDbCollection(dbName, "cryptocurrency")
 
