@@ -6,7 +6,6 @@ import (
 	"log"
 
 	"github.com/Baraha/crypto_server.git/api"
-	"github.com/Baraha/crypto_server.git/models"
 	"github.com/Baraha/crypto_server.git/services"
 	"github.com/fasthttp/router"
 	"github.com/valyala/fasthttp"
@@ -29,18 +28,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Println("Connected to MongoDB!")
-
-	// add object in data
-	collection := Client.Database("test").Collection("cryptocurrency")
-
-	bitcoin := models.Data{Coin_id: "bitcoin", Interval: 30}
-	insertResult, err := collection.InsertOne(context.TODO(), bitcoin)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("Inserted a single document: ", insertResult.InsertedID)
 
 	r := router.New()
 	r.GET("/cryptocurrency", api.CoinView)

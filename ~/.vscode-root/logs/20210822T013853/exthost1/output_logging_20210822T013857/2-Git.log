@@ -1,0 +1,20 @@
+Validating found git in: git
+Using git 2.25.1 from git
+> git rev-parse --git-dir
+Open repository: /home/waterbulcagmailcom/Work/crypto_server
+> git status -z -u
+> git symbolic-ref --short HEAD
+> git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track) refs/heads/main refs/remotes/main
+> git for-each-ref --sort -committerdate --format %(refname) %(objectname) %(*objectname)
+> git remote --verbose
+Warning: Failed to watch ref '/home/waterbulcagmailcom/Work/crypto_server/.git/refs/remotes/origin/main', is most likely packed.
+> git config --get commit.template
+> git show --textconv :Dockerfile
+> git ls-files --stage -- /home/waterbulcagmailcom/Work/crypto_server/Dockerfile
+> git cat-file -s bd087e05d13ae105bfc46583d45192840442f106
+> git check-ignore -v -z --stdin
+> git show --textconv :Dockerfile
+> git ls-files --stage -- /home/waterbulcagmailcom/Work/crypto_server/Dockerfile
+> git cat-file -s bd087e05d13ae105bfc46583d45192840442f106
+> git check-ignore -v -z --stdin
+> git check-ignore -v -z --stdin

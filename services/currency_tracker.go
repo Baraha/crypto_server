@@ -37,36 +37,51 @@ func save_detect(data models.Data, id string, interval int) {
 	filter := bson.M{"coin_id": id}
 	fmt.Println("filter: ", filter)
 
-	update := bson.M{"$set": bson.M{"rank": data.Rank, "symbol": data.Symbol, "priceusd": data.PriceUsd}}
+	update := bson.M{"$set": bson.M{
+		"rank":     data.Rank,
+		"symbol":   data.Symbol,
+		"priceusd": data.PriceUsd,
+	}}
 	fmt.Println("data to save ! ", data)
 	res, err := collection_statistic.UpdateMany(context.Background(), filter, update)
+	fmt.Println("update append", update)
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
 	fmt.Printf("Matched %v documents and updated %v documents.\n", res.MatchedCount, res.ModifiedCount)
-	THROTTLE--
+
+	update_one := bson.M{"$set": bson.M{
+		"isHandle": false}}
+	filter_one := bson.M{"_id": data.ObjectID}
+	fmt.Println("data.ObjectID.Hex() ", data.ObjectID.Hex())
+
+	res, err := collection_statistic.UpdateOne(context.Background(), filter_one, update_one)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+}
+
+func detectServerInfo(elem models.Data) {
+	data := api.GetServerInfo(elem.Coin_id)
+	save_detect(data, elem.Coin_id, elem.Interval)
+	fmt.Println("data append", data)
+	fmt.Println("results update ", data)
 }
 
 func Control() {
 
 	fmt.Println("Start working control service")
-	collection_currency, err := utils.GetMongoDbCollection(dbName, "cryptocurrency")
-	if err != nil {
-		log.Fatal(err)
-	}
-	options := options.Find()
-	filter := bson.M{}
-	for THROTTLE < EXEC_THROTTLE+1 {
-		time.Sleep(1 * time.Second)
-		if THROTTLE < 0 {
-			THROTTLE = 0
+	for {
+		time.Sleep(10 * time.Second)
+		collection_currency, err := utils.GetMongoDbCollection(dbName, "cryptocurrency")
+		var results []models.Data
+		if err != nil {
+			log.Fatal(err)
 		}
-		if THROTTLE >= EXEC_THROTTLE-1 {
-			time.Sleep(4 * time.Second)
-			fmt.Println("wait THROTTLE ", THROTTLE)
-			continue
-		}
+		options := options.Find()
+		filter := bson.M{}
 
 		cur, err := collection_currency.Find(context.TODO(), filter, options)
 		fmt.Println("cur: ", cur)
@@ -74,30 +89,50 @@ func Control() {
 			log.Fatal(err)
 		}
 
-		cnt := 0
 		for cur.Next(context.TODO()) {
-			if THROTTLE < EXEC_THROTTLE-1 {
-				THROTTLE++
-			}
-			cnt++
 			var elem models.Data
+			
 			err := cur.Decode(&elem)
 			if err != nil {
 				log.Fatal(err)
 			}
-			fmt.Println("elem.Coin_id: ", elem.Coin_id)
-			if elem.Coin_id == "" {
-				fmt.Println("error id detected, id: ", elem.Coin_id)
+			fmt.Println("elem.IsHandle: ", elem.IsHandle)
+			
+			results = append(results, elem)
+		}
+		println("result for find", results)
+		cur.Close(context.TODO())
+
+		for index, value := range results {
+			println("Index", index)
+			fmt.Println("elem.Coin_id: ", value.Coin_id)
+			if value.Coin_id == "" {
+				fmt.Println("error id detected, id: ", value.Coin_id)
 				continue
 			}
-			data := api.GetServerInfo(elem.Coin_id)
+			if value.IsHandle == false {
+				update_one := bson.M{"$set": bson.M{
+					"isHandle": true}}
+				filter_one := bson.M{"_id": value.ObjectID}
+				fmt.Println("elem.ObjectID.Hex() ", value.ObjectID.Hex())
 
-			go save_detect(data, elem.Coin_id, elem.Interval)
+				res, err := collection_currency.UpdateOne(context.Background(), filter_one, update_one)
+				if err != nil {
+					log.Fatal(err)
+					return
+				}
+				go detectServerInfo(value)
+				fmt.Printf("Matched %v documents in handler and updated %v documents.\n", res.MatchedCount, res.ModifiedCount)
+				if value.IsHandle == true {
+					continue
+				}
+			}
+			fmt.Println("ishandle : ", value.IsHandle)
 
-			fmt.Println("THROTTLE ", THROTTLE)
-			fmt.Println("data append", data)
-
-			fmt.Println("results update ", data)
 		}
+		cur.Close(context.TODO())
+		fmt.Println("next iter")
+
 	}
+
 }

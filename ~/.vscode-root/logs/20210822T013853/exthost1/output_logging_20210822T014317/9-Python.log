@@ -1,0 +1,14 @@
+Python interpreter path: /bin/python3
+Starting Pylance language server.
+Error 2021-08-22 01:43:18: Failed to check if file needs to be fixed [EntryNotFound (FileSystemError): Unable to read file '/root/.config/Code/User/settings.json' (Error: Unable to resolve non-existing file '/root/.config/Code/User/settings.json')
+	at _handleError (/snap/code/72/usr/share/code/resources/app/out/vs/workbench/services/extensions/node/extensionHostProcess.js:85:158459)
+	at processTicksAndRejections (internal/process/task_queues.js:93:5)
+	at async y.readText (/root/.vscode/extensions/ms-python.python-2021.8.1147840270/out/client/extension.js:9:320331)
+	at async p.doesFileNeedToBeFixed (/root/.vscode/extensions/ms-python.python-2021.8.1147840270/out/client/extension.js:59:586718)
+	at async /root/.vscode/extensions/ms-python.python-2021.8.1147840270/out/client/extension.js:59:585845
+	at async Promise.all (index 0)
+	at async p.getFilesToBeFixed (/root/.vscode/extensions/ms-python.python-2021.8.1147840270/out/client/extension.js:59:585791)
+	at async p.updateTestSettings (/root/.vscode/extensions/ms-python.python-2021.8.1147840270/out/client/extension.js:59:585418)] {
+  code: 'FileNotFound'
+}
+> conda --version
