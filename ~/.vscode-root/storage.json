@@ -1490,11 +1490,11 @@
             "folder": "file:///home/waterbulcagmailcom/Work/crypto_server",
             "backupPath": "/home/waterbulcagmailcom/Work/crypto_server/~/.vscode-root/Backups/1fc994ee57ce63822c50594f2483a2c9",
             "uiState": {
-                "mode": 0,
-                "x": 447,
-                "y": 196,
-                "width": 1024,
-                "height": 768
+                "mode": 1,
+                "x": 0,
+                "y": 64,
+                "width": 1920,
+                "height": 1016
             }
         },
         "openedWindows": []
