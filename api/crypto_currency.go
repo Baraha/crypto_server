@@ -164,12 +164,6 @@ func CoinView(ctx *fasthttp.RequestCtx) {
 
 	cur.All(context.Background(), &results)
 
-	if results == nil {
-		log.Fatal(err)
-		ctx.Response.Header.SetStatusCode(500)
-		return
-	}
-
 	json, _ := json.Marshal(results)
 	ctx.Response.Header.SetContentType("application/json")
 	ctx.Response.AppendBody(json)
@@ -221,7 +215,7 @@ func CreateCoinView(ctx *fasthttp.RequestCtx) {
 
 	var currency models.Data
 	json.Unmarshal([]byte(ctx.Request.Body()), &currency)
-
+	currency.ObjectID = primitive.NewObjectID()
 	res, err := collection.InsertOne(context.Background(), currency)
 	if err != nil {
 		log.Fatal(err)

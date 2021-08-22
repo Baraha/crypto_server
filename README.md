@@ -39,6 +39,12 @@ docker-compose logs --tail 100 api
 ```bash
 docker-compose logs -f --tail 100 api
 ```
+##### Сделать тестовую популяцию (для работы скрипта необходимо скачать python3)
+```bash
+
+python3 test_scripts/populate_for_debug.py 
+
+```
 
 ## Документация API
 Документация API написана с помощью apidoc.  

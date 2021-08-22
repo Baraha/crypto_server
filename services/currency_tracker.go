@@ -20,7 +20,7 @@ const (
 	EXEC_THROTTLE = 10
 )
 
-func save_detect(data models.Data, id string, interval int) {
+func save_detect(data models.Data, id string, interval int, baseId models.Data) {
 
 	if id == "" {
 		log.Fatal("error id detected, id: ", id)
@@ -53,19 +53,20 @@ func save_detect(data models.Data, id string, interval int) {
 
 	update_one := bson.M{"$set": bson.M{
 		"isHandle": false}}
-	filter_one := bson.M{"_id": data.ObjectID}
+	filter_one := bson.M{"_id": baseId.ObjectID}
 	fmt.Println("data.ObjectID.Hex() ", data.ObjectID.Hex())
 
-	res, err := collection_statistic.UpdateOne(context.Background(), filter_one, update_one)
+	res_one, err := collection_statistic.UpdateOne(context.Background(), filter_one, update_one)
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
+	fmt.Printf("Matched %v documents and updated %v documents.\n", res_one.MatchedCount, res_one.ModifiedCount)
 }
 
 func detectServerInfo(elem models.Data) {
 	data := api.GetServerInfo(elem.Coin_id)
-	save_detect(data, elem.Coin_id, elem.Interval)
+	save_detect(data, elem.Coin_id, elem.Interval, elem)
 	fmt.Println("data append", data)
 	fmt.Println("results update ", data)
 }
@@ -74,7 +75,7 @@ func Control() {
 
 	fmt.Println("Start working control service")
 	for {
-		time.Sleep(10 * time.Second)
+		time.Sleep(1 * time.Second)
 		collection_currency, err := utils.GetMongoDbCollection(dbName, "cryptocurrency")
 		var results []models.Data
 		if err != nil {
@@ -91,13 +92,13 @@ func Control() {
 
 		for cur.Next(context.TODO()) {
 			var elem models.Data
-			
+
 			err := cur.Decode(&elem)
 			if err != nil {
 				log.Fatal(err)
 			}
 			fmt.Println("elem.IsHandle: ", elem.IsHandle)
-			
+
 			results = append(results, elem)
 		}
 		println("result for find", results)
