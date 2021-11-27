@@ -4,6 +4,6 @@
 .vscode/
 *.swp
 /db/
-
+main
 # libraries config files
 backend/.python-version
