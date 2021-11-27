@@ -1,0 +1,9 @@
+.idea/
+.idea/*
+.DS_Store
+.vscode/
+*.swp
+/db/
+
+# libraries config files
+backend/.python-version

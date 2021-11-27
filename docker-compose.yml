@@ -4,7 +4,7 @@ services:
 
     db:
         
-        image: mongo:latest
+        image: mongo:5.0.3
         container_name: mongo
         ports:
         - "27017:27017"
@@ -14,18 +14,15 @@ services:
         - MONGODB_PASSWORD=password
         - MONGODB_DATABASE=test
         volumes:
-        - /data/db:/bitnami
+        - ./db/:/bitnami
 
     api:
         container_name: crypto_server
         build:
             context: .
             dockerfile: Dockerfile
-        command: ["go", "run", "main.go"]
         depends_on:
             - db
-        volumes:
-            - .:/usr/src/app
         ports:
             - "8080:8080"
         restart: always

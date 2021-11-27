@@ -13,7 +13,7 @@ class Cryptocurrency(Document):
 
 if __name__ == "__main__":
     connect(host="mongodb://127.0.0.1:27017/test")
-    data = Cryptocurrency(coin_id='bitcoin', interval=30).save()
+    data = Cryptocurrency(coin_id='bitcoin', interval=1).save()
     print(data.pk)
 
 
