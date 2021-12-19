@@ -60,3 +60,9 @@ npm install apidoc -g
 ```bash
 sh scripts/apidoc_update.sh
 ```
+
+#### Для создания tls ключа и сертификата, в папке docker/api вводим комманду
+```bash
+mkdir ssl
+openssl req -x509 -newkey rsa:4096 -nodes -out ssl/nginx.crt -keyout ssl/nginx.key -days 365
+```

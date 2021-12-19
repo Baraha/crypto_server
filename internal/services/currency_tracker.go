@@ -62,6 +62,7 @@ func save_detect(data models.Data, id string, interval int, baseId models.Data) 
 		return
 	}
 	fmt.Printf("Matched %v documents and updated %v documents.\n", res_one.MatchedCount, res_one.ModifiedCount)
+	collection_statistic.Database().Client().Disconnect(context.Background())
 }
 
 func detectServerInfo(elem models.Data) {
@@ -85,6 +86,7 @@ func Control() {
 		filter := bson.M{}
 
 		cur, err := collection_currency.Find(context.TODO(), filter, options)
+
 		fmt.Println("cur: ", cur)
 		if err != nil {
 			log.Fatal(err)
@@ -133,6 +135,7 @@ func Control() {
 		}
 		cur.Close(context.TODO())
 		fmt.Println("next iter")
+		collection_currency.Database().Client().Disconnect(context.Background())
 
 	}
 

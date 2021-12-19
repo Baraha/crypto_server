@@ -10,11 +10,11 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-var mongo_url = "mongodb://mongo:27017/"
+var Mongo_url = "mongodb://mongo:27017/?connect=direct"
 
 func GetMongoDbConnection() (*mongo.Client, error) {
 
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(mongo_url))
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(Mongo_url))
 
 	if err != nil {
 		log.Fatal(err)
