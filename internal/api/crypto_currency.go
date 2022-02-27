@@ -8,16 +8,15 @@ import (
 	"log"
 	"time"
 
-	"github.com/Baraha/crypto_server.git/internal/utils"
-	"github.com/Baraha/crypto_server.git/models"
+	"github.com/Baraha/crypto_server.git/internal/config"
+	"github.com/Baraha/crypto_server.git/pkg/adapters/db"
+	"github.com/Baraha/crypto_server.git/pkg/models"
 	"github.com/antonholmquist/jason"
 	"github.com/valyala/fasthttp"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"gopkg.in/mgo.v2/bson"
 )
 
-var dbName = "test"
 var coincapUrl = "https://api.coincap.io/v2/assets/"
 
 func GetServerInfo(coin_id string) (response models.Data) {
@@ -138,32 +137,13 @@ func CoinView(ctx *fasthttp.RequestCtx) {
 				}
 			]
 	*/
-	options := options.Find()
-	//options.SetLimit(5)
 	filter := bson.M{}
-	collection, err := utils.GetMongoDbCollection(dbName, "cryptocurrency")
-	if err != nil {
-		log.Fatal(err)
-		ctx.Response.Header.SetStatusCode(500)
-		return
-	}
-	var results []bson.M
-	cur, err := collection.Find(context.Background(), filter, options)
-	if err != nil {
-		log.Fatal(err)
-		ctx.Response.Header.SetStatusCode(500)
-	}
 
+	var results []bson.M
+	cur := db.Find(config.DB_NAME, models.COLLECTION_CRYPTOCURRENCY, filter)
 	defer cur.Close(context.Background())
 
-	if err != nil {
-		log.Fatal(err)
-		ctx.Response.Header.SetStatusCode(500)
-		return
-	}
-
 	cur.All(context.Background(), &results)
-
 	json, _ := json.Marshal(results)
 	ctx.Response.Header.SetContentType("application/json")
 	ctx.Response.AppendBody(json)
@@ -173,7 +153,7 @@ func CreateCoinView(ctx *fasthttp.RequestCtx) {
 	/**
 
 	Создание партии
-	@api {POST} api/batches/ Создание партии
+	@api {POST} api/batches/ Создание крипты
 	@apiName Создания статистики по криптовалюте
 	@apiGroup Криптовалюта
 	@apiDescription Создания статистики по криптовалюте
@@ -206,24 +186,12 @@ func CreateCoinView(ctx *fasthttp.RequestCtx) {
 
 
 	*/
-	collection, err := utils.GetMongoDbCollection(dbName, "cryptocurrency")
-	if err != nil {
-		log.Fatal(err)
-		ctx.Response.Header.SetStatusCode(500)
-		return
-	}
 
 	var currency models.Data
 	json.Unmarshal([]byte(ctx.Request.Body()), &currency)
 	currency.ObjectID = primitive.NewObjectID()
-	res, err := collection.InsertOne(context.Background(), currency)
-	if err != nil {
-		log.Fatal(err)
-		ctx.Response.Header.SetStatusCode(500)
-		return
-	}
-
-	response, _ := json.Marshal(res)
+	currency.Save()
+	response, _ := json.Marshal("success")
 	ctx.Response.Header.SetContentType("application/json")
 	ctx.Response.AppendBody(response)
 
@@ -246,43 +214,19 @@ func DeleteCoinView(ctx *fasthttp.RequestCtx) {
 		{"DeletedCount":0}
 	}
 	*/
-	collection, err := utils.GetMongoDbCollection(dbName, "cryptocurrency")
 
-	if err != nil {
-		log.Fatal(err)
-		ctx.Response.Header.SetStatusCode(500)
-		return
-	}
 	objID, _ := primitive.ObjectIDFromHex(fmt.Sprint(ctx.UserValue("id")))
-	fmt.Fprintf(ctx, "objID: %s\n", objID)
-	fmt.Fprintf(ctx, "UserValue: %s\n", ctx.UserValue("id"))
-	res, err := collection.DeleteOne(context.Background(), bson.M{"_id": objID})
-	if err != nil {
-		log.Fatal(err)
-		ctx.Response.Header.SetStatusCode(500)
-		return
-	}
+	filter := bson.M{"_id": objID}
+	db.DeleteOne(config.DB_NAME, models.COLLECTION_CRYPTOCURRENCY, filter)
 
-	jsonResponse, _ := json.Marshal(res)
-	ctx.Response.AppendBody(jsonResponse)
 }
 
 func CoinItemView(ctx *fasthttp.RequestCtx) {
 
-	collection, err := utils.GetMongoDbCollection(dbName, "cryptocurrency")
-	if err != nil {
-		log.Fatal(err)
-		ctx.Response.Header.SetStatusCode(500)
-		return
-	}
-
-	options := options.Find()
 	filter := bson.M{}
-	cur, err := collection.Find(context.TODO(), filter, options)
+
+	cur := db.Find(config.DB_NAME, models.COLLECTION_CRYPTOCURRENCY, filter)
 	fmt.Println("cur: ", cur)
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	cnt := 0
 	var results map[string]models.Data
@@ -306,6 +250,7 @@ func CoinItemView(ctx *fasthttp.RequestCtx) {
 	if err := cur.Err(); err != nil {
 		log.Fatal(err)
 	}
+
 	// Close the cursor once finished
 	cur.Close(context.TODO())
 	json, _ := json.Marshal(results)
