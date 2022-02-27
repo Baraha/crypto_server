@@ -5,6 +5,7 @@ import "time"
 var REDIS_ADDR string
 var MONGO_URL string
 var DB_NAME string = "test"
+var SERVICE_PORT string = "8080"
 var STATIC_CACHE_TIME time.Duration = 30 * time.Second
 
 func Init(conf_type string) {

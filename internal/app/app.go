@@ -41,6 +41,6 @@ func Start() {
 	r.DELETE("/cryptocurrency/{id}", api.DeleteCoinView)
 	r.GET("/cryptocurrency/analitics", api.CoinItemView)
 
-	log.Fatal(fasthttp.ListenAndServe(":8080", r.Handler))
+	log.Fatal(fasthttp.ListenAndServe(fmt.Sprintf(":%v", config.SERVICE_PORT), r.Handler))
 
 }
